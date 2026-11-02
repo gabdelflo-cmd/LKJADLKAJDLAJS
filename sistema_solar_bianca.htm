@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sorra — Sistema Solar de Palabras</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at center, #1a0033 0%, #050010 60%, #000000 100%);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1800px;
+        }
+
+        .universo {
+            position: relative;
+            transform-style: preserve-3d;
+            width: 1000px;
+            height: 1000px;
+        }
+
+        /* Sol central: sorra */
+        .sol {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5rem;
+            font-weight: 900;
+            color: #ffeb3b;
+            text-shadow: 
+                0 0 15px #ffeb3b,
+                0 0 30px #ffeb3b,
+                0 0 60px #ffc107,
+                0 0 100px #ff9800,
+                0 0 150px #ff5722;
+            z-index: 100;
+            animation: latido-sol 2.5s ease-in-out infinite alternate;
+            white-space: nowrap;
+        }
+
+        @keyframes latido-sol {
+            from {
+                transform: translate(-50%, -50%) scale(1);
+                filter: brightness(1);
+            }
+            to {
+                transform: translate(-50%, -50%) scale(1.2);
+                filter: brightness(1.5);
+            }
+        }
+
+        /* Resplandor del sol */
+        .resplandor-sol {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,235,59,0.25) 0%, rgba(255,193,7,0.1) 50%, transparent 70%);
+            z-index: 1;
+            animation: pulsar-resplandor 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulsar-resplandor {
+            from {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.6;
+            }
+            to {
+                transform: translate(-50%, -50%) scale(1.6);
+                opacity: 1;
+            }
+        }
+
+        /* Estilos generales de órbitas */
+        .orbita {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-style: preserve-3d;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .palabra {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-style: preserve-3d;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            white-space: nowrap;
+        }
+
+        .palabra span {
+            display: inline-block;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Órbita 1 — más cercana */
+        .orbita-1 {
+            width: 500px;
+            height: 500px;
+            animation: orbita1 20s linear infinite;
+        }
+
+        @keyframes orbita1 {
+            from { transform: translate(-50%, -50%) rotateY(0deg) rotateX(20deg); }
+            to { transform: translate(-50%, -50%) rotateY(360deg) rotateX(20deg); }
+        }
+
+        /* Órbita 2 */
+        .orbita-2 {
+            width: 650px;
+            height: 650px;
+            animation: orbita2 28s linear infinite;
+        }
+
+        @keyframes orbita2 {
+            from { transform: translate(-50%, -50%) rotateY(90deg) rotateX(-15deg); }
+            to { transform: translate(-50%, -50%) rotateY(450deg) rotateX(-15deg); }
+        }
+
+        /* Órbita 3 */
+        .orbita-3 {
+            width: 800px;
+            height: 800px;
+            animation: orbita3 38s linear infinite;
+        }
+
+        @keyframes orbita3 {
+            from { transform: translate(-50%, -50%) rotateY(180deg) rotateX(10deg); }
+            to { transform: translate(-50%, -50%) rotateY(540deg) rotateX(10deg); }
+        }
+
+        /* Órbita 4 — gigante */
+        .orbita-4 {
+            width: 950px;
+            height: 950px;
+            animation: orbita4 50s linear infinite;
+        }
+
+        @keyframes orbita4 {
+            from { transform: translate(-50%, -50%) rotateY(270deg) rotateX(-25deg); }
+            to { transform: translate(-50%, -50%) rotateY(630deg) rotateX(-25deg); }
+        }
+
+        /* Estrellas de fondo */
+        .estrellas {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .estrella {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: parpadear 3s ease-in-out infinite;
+        }
+
+        @keyframes parpadear {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .sol { font-size: 3rem; }
+            .palabra { font-size: 0.9rem; }
+            .universo { width: 600px; height: 600px; }
+            .orbita-1 { width: 300px; height: 300px; }
+            .orbita-2 { width: 420px; height: 420px; }
+            .orbita-3 { width: 550px; height: 550px; }
+            .orbita-4 { width: 680px; height: 680px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="estrellas" id="estrellas"></div>
+
+    <div class="universo">
+        <div class="resplandor-sol"></div>
+        <div class="sol">sorra 💜</div>
+
+        <!-- Órbita 1: frases cercanas -->
+        <div class="orbita orbita-1">
+            <div class="palabra" style="transform: rotateY(0deg) translateZ(250px);"><span>te quiero 💜</span></div>
+            <div class="palabra" style="transform: rotateY(30deg) translateZ(250px);"><span>eres única 🌟</span></div>
+            <div class="palabra" style="transform: rotateY(60deg) translateZ(250px);"><span>siempre aquí</span></div>
+            <div class="palabra" style="transform: rotateY(90deg) translateZ(250px);"><span>mi paz 🕊️</span></div>
+            <div class="palabra" style="transform: rotateY(120deg) translateZ(250px);"><span>tu luz ✨</span></div>
+            <div class="palabra" style="transform: rotateY(150deg) translateZ(250px);"><span>todo cambia 🌍</span></div>
+            <div class="palabra" style="transform: rotateY(180deg) translateZ(250px);"><span>tú no 💎</span></div>
+            <div class="palabra" style="transform: rotateY(210deg) translateZ(250px);"><span>mi lugar 🏠</span></div>
+            <div class="palabra" style="transform: rotateY(240deg) translateZ(250px);"><span>eterno ♾️</span></div>
+            <div class="palabra" style="transform: rotateY(270deg) translateZ(250px);"><span>corazón 💓</span></div>
+            <div class="palabra" style="transform: rotateY(300deg) translateZ(250px);"><span>especial ✨</span></div>
+            <div class="palabra" style="transform: rotateY(330deg) translateZ(250px);"><span>nada igual</span></div>
+        </div>
+
+        <!-- Órbita 2: frases medianas -->
+        <div class="orbita orbita-2">
+            <div class="palabra" style="transform: rotateY(0deg) translateZ(325px);"><span>gracias 🙏</span></div>
+            <div class="palabra" style="transform: rotateY(20deg) translateZ(325px);"><span>cariño 💝</span></div>
+            <div class="palabra" style="transform: rotateY(40deg) translateZ(325px);"><span>bonita 💖</span></div>
+            <div class="palabra" style="transform: rotateY(60deg) translateZ(325px);"><span>brillas 🔥</span></div>
+            <div class="palabra" style="transform: rotateY(80deg) translateZ(325px);"><span>importante 💎</span></div>
+            <div class="palabra" style="transform: rotateY(100deg) translateZ(325px);"><span>esencia 🌸</span></div>
+            <div class="palabra" style="transform: rotateY(120deg) translateZ(325px);"><span>contigo</span></div>
+            <div class="palabra" style="transform: rotateY(140deg) translateZ(325px);"><span>siempre</span></div>
+            <div class="palabra" style="transform: rotateY(160deg) translateZ(325px);"><span>tu sonrisa 😊</span></div>
+            <div class="palabra" style="transform: rotateY(180deg) translateZ(325px);"><span>mejor momento</span></div>
+            <div class="palabra" style="transform: rotateY(200deg) translateZ(325px);"><span>valioso</span></div>
+            <div class="palabra" style="transform: rotateY(220deg) translateZ(325px);"><span>inolvidable</span></div>
+            <div class="palabra" style="transform: rotateY(240deg) translateZ(325px);"><span>fuerte 💪</span></div>
+            <div class="palabra" style="transform: rotateY(260deg) translateZ(325px);"><span>hermosa 💜</span></div>
+            <div class="palabra" style="transform: rotateY(280deg) translateZ(325px);"><span>única</span></div>
+            <div class="palabra" style="transform: rotateY(300deg) translateZ(325px);"><span>mi inspiración</span></div>
+            <div class="palabra" style="transform: rotateY(320deg) translateZ(325px);"><span>luz de mi vida</span></div>
+            <div class="palabra" style="transform: rotateY(340deg) translateZ(325px);"><span>siempre tú</span></div>
+        </div>
+
+        <!-- Órbita 3: frases más alejadas -->
+        <div class="orbita orbita-3">
+            <div class="palabra" style="transform: rotateY(0deg) translateZ(400px);"><span>te extraño</span></div>
+            <div class="palabra" style="transform: rotateY(15deg) translateZ(400px);"><span>siempre pienso en ti</span></div>
+            <div class="palabra" style="transform: rotateY(30deg) translateZ(400px);"><span>tu eres todo</span></div>
+            <div class="palabra" style="transform: rotateY(45deg) translateZ(400px);"><span>nada sin ti</span></div>
+            <div class="palabra" style="transform: rotateY(60deg) translateZ(400px);"><span>conmigo siempre</span></div>
+            <div class="palabra" style="transform: rotateY(75deg) translateZ(400px);"><span>tu mirada ✨</span></div>
+            <div class="palabra" style="transform: rotateY(90deg) translateZ(400px);"><span>tus palabras</span></div>
+            <div class="palabra" style="transform: rotateY(105deg) translateZ(400px);"><span>tu presencia</span></div>
+            <div class="palabra" style="transform: rotateY(120deg) translateZ(400px);"><span>me haces bien</span></div>
+            <div class="palabra" style="transform: rotateY(135deg) translateZ(400px);"><span>calor humano</span></div>
+            <div class="palabra" style="transform: rotateY(150deg) translateZ(400px);"><span>momentos pequeños</span></div>
+            <div class="palabra" style="transform: rotateY(165deg) translateZ(400px);"><span>recuerdos lindos</span></div>
+            <div class="palabra" style="transform: rotateY(180deg) translateZ(400px);"><span>guardo en mí</span></div>
+            <div class="palabra" style="transform: rotateY(195deg) translateZ(400px);"><span>nadie como tú</span></div>
+            <div class="palabra" style="transform: rotateY(210deg) translateZ(400px);"><span>especial para mí</span></div>
+            <div class="palabra" style="transform: rotateY(225deg) translateZ(400px);"><span>siempre en mi mente</span></div>
+            <div class="palabra" style="transform: rotateY(240deg) translateZ(400px);"><span>no te olvido</span></div>
+            <div class="palabra" style="transform: rotateY(255deg) translateZ(400px);"><span>día tras día</span></div>
+            <div class="palabra" style="transform: rotateY(270deg) translateZ(400px);"><span>tú estás aquí</span></div>
+            <div class="palabra" style="transform: rotateY(285deg) translateZ(400px);"><span>mi pensamiento</span></div>
+            <div class="palabra" style="transform: rotateY(300deg) translateZ(400px);"><span>siempre vuelve</span></div>
+            <div class="palabra" style="transform: rotateY(315deg) translateZ(400px);"><span>hacia ti</span></div>
+            <div class="palabra" style="transform: rotateY(330deg) translateZ(400px);"><span>porque eres</span></div>
+            <div class="palabra" style="transform: rotateY(345deg) translateZ(400px);"><span>sorra 💜</span></div>
+        </div>
+
+        <!-- Órbita 4: gigante, muchas palabras -->
+        <div class="orbita orbita-4">
+            <div class="palabra" style="transform: rotateY(0deg) translateZ(475px);"><span>universo</span></div>
+            <div class="palabra" style="transform: rotateY(10deg) translateZ(475px);"><span>estrellas 🌟</span></div>
+            <div class="palabra" style="transform: rotateY(20deg) translateZ(475px);"><span>luna 🌙</span></div>
+            <div class="palabra" style="transform: rotateY(30deg) translateZ(475px);"><span>sol ☀️</span></div>
+            <div class="palabra" style="transform: rotateY(40deg) translateZ(475px);"><span>galaxia</span></div>
+            <div class="palabra" style="transform: rotateY(50deg) translateZ(475px);"><span>infinito ♾️</span></div>
+            <div class="palabra" style="transform: rotateY(60deg) translateZ(475px);"><span>vida</span></div>
+            <div class="palabra" style="transform: rotateY(70deg) translateZ(475px);"><span>amor</span></div>
+            <div class="palabra" style="transform: rotateY(80deg) translateZ(475px);"><span>paz 🕊️</span></div>
+            <div class="palabra" style="transform: rotateY(90deg) translateZ(475px);"><span>esperanza</span></div>
+            <div class="palabra" style="transform: rotateY(100deg) translateZ(475px);"><span>sueños 💭</span></div>
+            <div class="palabra" style="transform: rotateY(110deg) translateZ(475px);"><span>destino</span></div>
+            <div class="palabra" style="transform: rotateY(120deg) translateZ(475px);"><span>camino</span></div>
+            <div class="palabra" style="transform: rotateY(130deg) translateZ(475px);"><span>tiempo ⏳</span></div>
+            <div class="palabra" style="transform: rotateY(140deg) translateZ(475px);"><span>momento</span></div>
+            <div class="palabra" style="transform: rotateY(150deg) translateZ(475px);"><span>ahora</span></div>
+            <div class="palabra" style="transform: rotateY(160deg) translateZ(475px);"><span>nunca</span></div>
+            <div class="palabra" style="transform: rotateY(170deg) translateZ(475px);"><span>siempre</span></div>
+           
+
+
+
